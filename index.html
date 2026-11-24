@@ -1,0 +1,705 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Інклюзивний простір</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout concept: яскрава кольорова стрічка розділів, кожен розділ має власний акцент; товсті контури й «тверді» тіні як у дитячій аплікації */
+:root{
+  --bg:#F6FBFF; --ink:#1B2150; --muted:#454E80; --card:#FFFFFF; --edge:#1B2150; --sh:#1B2150; --line:#CFDAF3;
+  --sun:#FFC933; --coral:#FF6B5B; --teal:#18B5A5; --violet:#8A6CFF; --sky:#3AA7FF; --on:#1B2150;
+  --t-sky:#E1F0FF; --t-sun:#FFF0C2; --t-vio:#ECE6FF; --t-teal:#D5F5EF; --hdr:#F6FBFF; --link:#1F4FD6;
+  --font-h:'Rubik','Arial',sans-serif; --font-b:'Nunito','Arial',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12163A; --ink:#F1F3FF; --muted:#BAC1EA; --card:#1E2352; --edge:#8F99E8; --sh:#080A22; --line:#343B78;
+  --t-sky:#17275A; --t-sun:#463A12; --t-vio:#2A2564; --t-teal:#103D42; --hdr:#12163A; --link:#8DB4FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12163A; --ink:#F1F3FF; --muted:#BAC1EA; --card:#1E2352; --edge:#8F99E8; --sh:#080A22; --line:#343B78;
+  --t-sky:#17275A; --t-sun:#463A12; --t-vio:#2A2564; --t-teal:#103D42; --hdr:#12163A; --link:#8DB4FF; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font-b)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--hdr)}
+img,svg{max-width:100%}
+a{color:var(--link)}
+h1,h2,h3{font-family:var(--font-h);line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1152px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--hdr);border-bottom:2px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;font:800 19px var(--font-h);color:var(--ink);text-decoration:none;white-space:nowrap}
+.nav{display:flex;gap:8px;overflow-x:auto;margin-left:auto;padding:4px 2px;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap;text-decoration:none;font-weight:800;font-size:15px;color:var(--on);padding:7px 14px;border-radius:999px;border:2px solid var(--edge)}
+.nav a:nth-child(1){background:var(--sky)}.nav a:nth-child(2){background:var(--sun)}.nav a:nth-child(3){background:var(--coral)}.nav a:nth-child(4){background:var(--teal)}
+@media (max-width:760px){.top .wrap{flex-wrap:wrap;gap:4px}.nav{margin-left:0;width:100%}}
+
+/* hero */
+.hero{background:var(--t-sun);border-bottom:3px solid var(--edge)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:32px;align-items:center;padding-block:48px}
+.hero > .wrap > *{min-width:0}
+.pill{display:inline-block;background:var(--violet);color:var(--on);font:800 14px var(--font-h);letter-spacing:.06em;padding:7px 16px;border-radius:999px;border:2px solid var(--edge);margin-bottom:18px}
+h1{font-size:clamp(2.1rem,5.6vw,3.9rem);font-weight:800}
+h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--coral) 62%);padding:0 4px}
+.lead{font-size:1.2rem;color:var(--muted);margin-top:18px;max-width:34em}
+.credit{display:inline-flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--edge);box-shadow:5px 5px 0 var(--sh);border-radius:18px;padding:12px 18px;margin-top:26px}
+.credit b{font-family:var(--font-h)}
+.credit small{display:block;color:var(--muted);font-size:14px;line-height:1.3}
+.heroart{width:100%;height:auto;display:block}
+.sky{fill:var(--t-sky)}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-block:32px}}
+
+/* sections */
+section{scroll-margin-top:84px}
+.band{padding-block:64px}
+.b-norms{--sec:var(--sky);background:var(--t-sky)}
+.b-consult{--sec:var(--sun);background:var(--t-sun)}
+.b-games{--sec:var(--coral);background:var(--t-vio)}
+.b-events{--sec:var(--teal);background:var(--t-teal)}
+.shead{display:flex;align-items:center;gap:24px;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap}
+.shead > div{min-width:0;max-width:44em}
+.tag{display:inline-block;background:var(--sec);color:var(--on);border:2px solid var(--edge);font:800 13px var(--font-h);letter-spacing:.08em;padding:5px 14px;border-radius:999px;margin-bottom:12px;text-transform:uppercase}
+h2{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800}
+.shead p{color:var(--muted);margin-top:10px}
+.shead svg{width:170px;height:auto;flex:none}
+@media (max-width:640px){.shead svg{display:none}}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{font:800 15px var(--font-b);color:var(--ink);background:var(--card);border:2px solid var(--edge);border-radius:999px;padding:8px 16px;cursor:pointer}
+.chip[aria-pressed="true"],.chip[aria-selected="true"]{background:var(--sec);color:var(--on)}
+.chips .lbl{align-self:center;font-weight:800;color:var(--muted);margin-right:4px}
+
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.card{background:var(--card);border:2px solid var(--edge);border-radius:20px;padding:20px;box-shadow:5px 5px 0 var(--sh);min-width:0;display:flex;flex-direction:column;gap:10px;transition:transform .15s}
+@media (hover:hover){.card:hover{transform:translate(-2px,-2px)}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}html{scroll-behavior:auto}}
+.card h3{font-size:1.15rem}
+.card p{color:var(--muted);font-size:16px}
+.kind{align-self:flex-start;font:800 12px var(--font-h);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:2px solid var(--edge);color:var(--on)}
+.k-law{background:var(--sun)}.k-gov{background:var(--sky)}.k-int{background:var(--coral)}
+.card .link{margin-top:auto;font-weight:800;font-size:15px}
+
+/* steps */
+.steps{list-style:none;padding:0;margin:44px 0 0;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));counter-reset:s}
+.steps li{counter-increment:s;background:var(--card);border:2px solid var(--edge);border-radius:18px;padding:16px;position:relative;min-width:0}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--sec);color:var(--on);border:2px solid var(--edge);font:800 17px var(--font-h);margin-bottom:8px}
+.steps b{display:block;font-family:var(--font-h)}
+.steps span{color:var(--muted);font-size:15px;line-height:1.4;display:block;margin-top:4px}
+.steps-title{margin-top:48px;font-size:1.5rem}
+.note{font-size:14px;color:var(--muted);margin-top:22px}
+
+/* tabs & accordion */
+.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tabs .chip{font-size:17px;padding:10px 22px}
+.acc{display:grid;gap:12px}
+details{background:var(--card);border:2px solid var(--edge);border-radius:18px;box-shadow:4px 4px 0 var(--sh)}
+summary{cursor:pointer;list-style:none;padding:16px 56px 16px 20px;font:700 1.05rem var(--font-h);position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:16px;top:50%;translate:0 -50%;width:30px;height:30px;border-radius:50%;background:var(--sec);color:var(--on);border:2px solid var(--edge);display:grid;place-items:center;font:800 20px/1 var(--font-h)}
+details[open] > summary::after{content:"–"}
+.dbody{padding:0 20px 18px;color:var(--muted)}
+.dbody p+p,.dbody ul,.dbody ol{margin-top:10px}
+.dbody ul,.dbody ol{padding-left:22px}
+.dbody li{margin-top:4px}
+.dbody strong{color:var(--ink)}
+.help{margin-top:30px;background:var(--card);border:2px solid var(--edge);border-radius:20px;padding:20px 22px;box-shadow:5px 5px 0 var(--sh);display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.help h3{margin-bottom:6px}
+.help p{color:var(--muted)}
+@media (max-width:560px){.help{grid-template-columns:1fr}}
+
+/* big parent articles */
+.pbig{display:grid;gap:32px}
+.big{background:var(--card);border:2px solid var(--edge);border-radius:28px;box-shadow:8px 8px 0 var(--sh);padding:clamp(22px,4.5vw,56px);min-width:0}
+.btag{display:inline-block;background:var(--sec);color:var(--on);border:2px solid var(--edge);font:800 13px var(--font-h);letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:16px}
+.big h3{font-size:clamp(1.7rem,4vw,2.6rem);margin-bottom:16px}
+.big .intro{font-size:1.25rem;line-height:1.6;color:var(--ink)}
+.big h4{font:700 1.4rem var(--font-h);margin:30px 0 10px;color:var(--ink)}
+.big p,.big li{font-size:1.12rem;line-height:1.65;color:var(--muted)}
+.big p{margin-top:12px}
+.big ul,.big ol{padding-left:26px;margin:8px 0}
+.big li{margin-top:8px}
+.big strong{color:var(--ink)}
+.tip{margin-top:28px !important;background:var(--t-sun);border:2px solid var(--edge);border-radius:18px;padding:18px 22px;color:var(--ink) !important}
+
+/* games */
+.gcard .top2{display:flex;align-items:center;gap:12px}
+.ico{width:54px;height:54px;border-radius:16px;border:2px solid var(--edge);display:grid;place-items:center;font-size:28px;flex:none}
+.gcard:nth-child(4n+1) .ico{background:var(--sun)}.gcard:nth-child(4n+2) .ico{background:var(--teal)}.gcard:nth-child(4n+3) .ico{background:var(--coral)}.gcard:nth-child(4n) .ico{background:var(--sky)}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.meta span{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--t-vio);border:1.5px solid var(--edge);color:var(--ink)}
+.gcard details{box-shadow:none;border-radius:14px;margin-top:4px}
+.gcard summary{font-size:15px;padding:10px 46px 10px 14px}
+.gcard summary::after{width:26px;height:26px;font-size:17px;right:10px}
+.gcard .dbody{padding:0 14px 14px;font-size:15.5px}
+.count{font-weight:800;color:var(--muted);margin-bottom:16px}
+.empty{background:var(--card);border:2px dashed var(--edge);border-radius:18px;padding:24px;text-align:center;color:var(--muted)}
+
+/* events */
+.evsum{display:grid;gap:4px}
+.evsum small{font:700 14px var(--font-b);color:var(--muted)}
+.evtag{display:inline-block;font-weight:800;font-size:13px;padding:3px 10px;border-radius:999px;background:var(--teal);color:var(--on);border:1.5px solid var(--edge);margin-right:6px}
+.timeline{list-style:none;padding:0 !important;display:grid;gap:10px}
+.timeline li{background:var(--t-teal);border:2px solid var(--edge);border-radius:14px;padding:10px 14px;margin:0 !important}
+.timeline b{color:var(--ink)}
+.inc{margin-top:12px;background:var(--t-sun);border:2px solid var(--edge);border-radius:14px;padding:10px 14px;color:var(--ink)}
+
+/* footer */
+footer{background:var(--ink);color:var(--bg);padding-block:44px}
+footer .wrap{display:grid;gap:14px}
+footer h2{font-size:1.5rem;color:var(--sun)}
+footer p{max-width:46em}
+footer small{opacity:.85;font-size:14px}
+</style>
+
+<header class="top">
+<div class="wrap">
+<a class="brand" href="#top">
+<svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="17" fill="#FFC933" stroke="#1B2150" stroke-width="2"/><circle cx="11" cy="15" r="4" fill="#FF6B5B"/><circle cx="25" cy="15" r="4" fill="#18B5A5"/><path d="M9 24 Q18 32 27 24" fill="none" stroke="#1B2150" stroke-width="3" stroke-linecap="round"/></svg>
+Інклюзивний простір
+</a>
+<nav class="nav" aria-label="Розділи сайту">
+<a href="#norms">Закони</a><a href="#consult">Консультації</a><a href="#games">Ігри та вправи</a><a href="#events">Конспекти</a>
+</nav>
+</div>
+</header>
+
+<main id="top">
+<div class="hero">
+<div class="wrap">
+<div>
+<span class="pill">Освітній сайт для батьків і педагогів</span>
+<h1>Школа, де місце є <em>кожному</em></h1>
+<p class="lead">Закони, поради, ігри та готові конспекти для тих, хто працює з дітьми з особливими освітніми потребами і хоче, щоб навчання було радісним і спільним.</p>
+<div class="credit">
+<svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#8A6CFF" stroke="#1B2150" stroke-width="2"/><path d="M22 10 L25 18 L34 18 L27 23.5 L29.7 32 L22 27 L14.3 32 L17 23.5 L10 18 L19 18 Z" fill="#FFC933" stroke="#1B2150" stroke-width="1.5" stroke-linejoin="round"/></svg>
+<div><b>Сайт створила студентка Полічко Софія</b><small>група К231/2-24 · спеціальність «Соціальна педагогіка»</small></div>
+</div>
+</div>
+<svg class="heroart" viewBox="0 0 640 420" role="img" aria-label="Малюнок: діти різного зросту й кольору шкіри, одна дитина на візку, тримаються за руки під веселкою">
+<rect class="sky" x="10" y="10" width="620" height="400" rx="40"/>
+<circle cx="560" cy="80" r="42" fill="#FFC933" stroke="#1B2150" stroke-width="3"/>
+<ellipse cx="90" cy="84" rx="48" ry="20" fill="#FFFFFF" stroke="#1B2150" stroke-width="3"/>
+<ellipse cx="124" cy="72" rx="30" ry="18" fill="#FFFFFF" stroke="#1B2150" stroke-width="3"/>
+<g fill="none" stroke-width="18">
+<path d="M70 330 A250 250 0 0 1 570 330" stroke="#FF6B5B"/>
+<path d="M92 330 A228 228 0 0 1 548 330" stroke="#FFC933"/>
+<path d="M114 330 A206 206 0 0 1 526 330" stroke="#18B5A5"/>
+<path d="M136 330 A184 184 0 0 1 504 330" stroke="#8A6CFF"/>
+</g>
+<ellipse cx="320" cy="430" rx="360" ry="100" fill="#18B5A5" stroke="#1B2150" stroke-width="3"/>
+<g stroke="#1B2150" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<line x1="127" y1="290" x2="188" y2="290" stroke-width="11" stroke="#FFD3B0"/>
+<line x1="242" y1="290" x2="313" y2="290" stroke-width="11" stroke="#C68642"/>
+<line x1="367" y1="290" x2="438" y2="290" stroke-width="11" stroke="#8D5524"/>
+<line x1="492" y1="290" x2="533" y2="290" stroke-width="11" stroke="#F1C27D"/>
+<rect x="73" y="324" width="16" height="26" rx="6" fill="#1B2150"/><rect x="111" y="324" width="16" height="26" rx="6" fill="#1B2150"/>
+<rect x="188" y="324" width="16" height="26" rx="6" fill="#1B2150"/><rect x="226" y="324" width="16" height="26" rx="6" fill="#1B2150"/>
+<rect x="438" y="324" width="16" height="26" rx="6" fill="#1B2150"/><rect x="476" y="324" width="16" height="26" rx="6" fill="#1B2150"/>
+<rect x="513" y="324" width="16" height="26" rx="6" fill="#1B2150"/><rect x="551" y="324" width="16" height="26" rx="6" fill="#1B2150"/>
+<rect x="64" y="256" width="72" height="76" rx="26" fill="#FF6B5B"/>
+<rect x="179" y="256" width="72" height="76" rx="26" fill="#FFC933"/>
+<rect x="429" y="256" width="72" height="76" rx="26" fill="#3AA7FF"/>
+<rect x="504" y="262" width="72" height="70" rx="26" fill="#8A6CFF"/>
+<circle cx="100" cy="220" r="32" fill="#FFD3B0"/>
+<circle cx="215" cy="220" r="32" fill="#C68642"/>
+<circle cx="465" cy="220" r="32" fill="#8D5524"/>
+<circle cx="540" cy="228" r="30" fill="#F1C27D"/>
+<rect x="313" y="262" width="62" height="48" rx="20" fill="#18B5A5"/>
+<rect x="352" y="300" width="48" height="16" rx="8" fill="#1B2150"/>
+<circle cx="340" cy="320" r="34" fill="none" stroke-width="7"/>
+<circle cx="408" cy="338" r="11" fill="#FFFFFF"/>
+<circle cx="345" cy="226" r="32" fill="#E0AC69"/>
+</g>
+<g fill="#1B2150">
+<circle cx="90" cy="216" r="3.5"/><circle cx="110" cy="216" r="3.5"/>
+<circle cx="205" cy="216" r="3.5"/><circle cx="225" cy="216" r="3.5"/>
+<circle cx="335" cy="222" r="3.5"/><circle cx="355" cy="222" r="3.5"/>
+<circle cx="455" cy="216" r="3.5"/><circle cx="475" cy="216" r="3.5"/>
+<circle cx="531" cy="224" r="3.5"/><circle cx="549" cy="224" r="3.5"/>
+</g>
+<g fill="none" stroke="#1B2150" stroke-width="3.5" stroke-linecap="round">
+<path d="M91 232 Q100 240 109 232"/><path d="M206 232 Q215 240 224 232"/><path d="M336 238 Q345 246 354 238"/><path d="M456 232 Q465 240 474 232"/><path d="M532 238 Q540 245 548 238"/>
+</g>
+<circle cx="40" cy="190" r="7" fill="#FF6B5B"/><circle cx="600" cy="190" r="7" fill="#18B5A5"/><circle cx="300" cy="60" r="6" fill="#8A6CFF"/><circle cx="420" cy="48" r="5" fill="#FFC933"/>
+</svg>
+</div>
+</div>
+
+<!-- 1. Нормативна база -->
+<section id="norms" class="band b-norms">
+<div class="wrap">
+<div class="shead">
+<div>
+<span class="tag">Розділ 1</span>
+<h2>Нормативно-правова база інклюзивної освіти</h2>
+
+</div>
+<svg viewBox="0 0 200 160" role="img" aria-label="Малюнок: відкрита книга із закладкою та зіркою">
+<path d="M100 40 C80 28 44 28 20 38 L20 132 C44 122 80 122 100 134 Z" fill="#FFFFFF" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 40 C120 28 156 28 180 38 L180 132 C156 122 120 122 100 134 Z" fill="#FFC933" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+<path d="M36 60 Q66 52 88 62 M36 78 Q66 70 88 80 M36 96 Q66 88 88 98" fill="none" stroke="#3AA7FF" stroke-width="5" stroke-linecap="round"/>
+<path d="M118 62 Q140 52 166 60 M118 80 Q140 70 166 78" fill="none" stroke="#1B2150" stroke-width="5" stroke-linecap="round"/>
+<path d="M150 14 L156 28 L172 28 L160 38 L164 52 L150 44 L136 52 L140 38 L128 28 L144 28 Z" fill="#FF6B5B" stroke="#1B2150" stroke-width="3" stroke-linejoin="round"/>
+</svg>
+</div>
+
+<div class="chips" id="normFilters" role="group" aria-label="Тип документа">
+<span class="lbl">Показати:</span>
+<button type="button" class="chip" data-f="all" aria-pressed="true">Усі</button>
+<button type="button" class="chip" data-f="law" aria-pressed="false">Закони</button>
+<button type="button" class="chip" data-f="gov" aria-pressed="false">Постанови й положення</button>
+<button type="button" class="chip" data-f="int" aria-pressed="false">Міжнародні документи</button>
+</div>
+
+<div class="grid" id="normGrid">
+<article class="card norm" data-cat="law"><span class="kind k-law">Закон</span><h3>Закон України «Про освіту», 2017</h3><p>Гарантує право на освіту без дискримінації, закріплює інклюзивне навчання та поняття особливих освітніх потреб.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/2145-19" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="law"><span class="kind k-law">Закон</span><h3>Закон України «Про повну загальну середню освіту», 2020</h3><p>Визначає організацію навчання в школах, інклюзивні й спеціальні класи, підтримку дітей з особливими освітніми потребами.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/463-20" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="law"><span class="kind k-law">Закон</span><h3>Закон України «Про дошкільну освіту»</h3><p>Регулює роботу закладів дошкільної освіти, зокрема створення інклюзивних груп для найменших.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/2628-14" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="law"><span class="kind k-law">Закон</span><h3>Закон України «Про охорону дитинства»</h3><p>Закріплює права дитини на розвиток, освіту, захист і особливу турботу для дітей з інвалідністю.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/2402-14" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="law"><span class="kind k-law">Закон</span><h3>Закон України «Про основи соціальної захищеності осіб з інвалідністю в Україні»</h3><p>Визначає гарантії соціального захисту, доступності та реабілітації для людей з інвалідністю.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/875-12" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="gov"><span class="kind k-gov">Постанова КМУ</span><h3>Порядок організації інклюзивного навчання у закладах загальної середньої освіти, № 957 від 15.09.2021</h3><p>Описує, як створюють команду психолого-педагогічного супроводу, складають індивідуальну програму розвитку й залучають асистентів.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/957-2021-%D0%BF" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="gov"><span class="kind k-gov">Постанова КМУ</span><h3>Положення про інклюзивно-ресурсний центр, № 545 від 12.07.2017</h3><p>Пояснює, як працюють центри, що проводять комплексну оцінку розвитку дитини та консультують сім’ї й педагогів.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/545-2017-%D0%BF" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="gov"><span class="kind k-gov">Положення закладу</span><h3>Положення про команду психолого-педагогічного супроводу</h3><p>Визначає склад, завдання й порядок роботи команди, яку створює керівник закладу для кожної дитини з особливими освітніми потребами.</p></article>
+<article class="card norm" data-cat="int"><span class="kind k-int">Міжнародний</span><h3>Конвенція ООН про права дитини, 1989</h3><p>Кожна дитина має право на освіту та розвиток, а інтереси дитини мають бути першочерговими. Україна ратифікувала її у 1991 році.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/995_021" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="int"><span class="kind k-int">Міжнародний</span><h3>Конвенція ООН про права осіб з інвалідністю, 2006</h3><p>Стаття 24 гарантує право на інклюзивну освіту на всіх рівнях. Україна ратифікувала Конвенцію у 2009 році.</p><a class="link" href="https://zakon.rada.gov.ua/laws/show/995_g71" target="_blank" rel="noopener">Відкрити текст ↗</a></article>
+<article class="card norm" data-cat="int"><span class="kind k-int">Міжнародний</span><h3>Саламанська декларація, 1994</h3><p>Заява ЮНЕСКО про те, що звичайні школи мають навчати всіх дітей, а освіта має підлаштовуватися під дитину.</p></article>
+</div>
+
+<h3 class="steps-title">Як це працює на практиці</h3>
+<ol class="steps">
+<li><b>Звернення батьків</b><span>Подають заяву до закладу освіти й звертаються до центру для оцінки розвитку</span></li>
+<li><b>Комплексна оцінка</b><span>Спеціалісти визначають особливості розвитку й потреби дитини</span></li>
+<li><b>Команда супроводу</b><span>Керівник закладу формує команду з педагогів, психолога й батьків</span></li>
+<li><b>Програма розвитку</b><span>Команда складає ІПР і погоджує її з батьками</span></li>
+<li><b>Підтримка й перегляд</b><span>Дитина навчається, а команда відстежує успіхи й уточнює план</span></li>
+</ol>
+<p class="note">Нормативні акти змінюються. Перед використанням у роботі звіряйтеся з чинною редакцією на офіційних ресурсах.</p>
+</div>
+</section>
+
+<!-- 2. Консультації -->
+<section id="consult" class="band b-consult">
+<div class="wrap">
+<div class="shead">
+<div>
+<span class="tag">Розділ 2</span>
+<h2>Консультації з соціального супроводу в інклюзивному закладі</h2>
+
+</div>
+<svg viewBox="0 0 200 160" role="img" aria-label="Малюнок: дві хмаринки розмови із серцем">
+<path d="M24 28 H116 A16 16 0 0 1 132 44 V84 A16 16 0 0 1 116 100 H64 L40 124 V100 H24 A16 16 0 0 1 8 84 V44 A16 16 0 0 1 24 28 Z" fill="#FFFFFF" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+<path d="M72 80 C48 62 48 44 62 44 C68 44 72 48 72 54 C72 48 76 44 82 44 C96 44 96 62 72 80 Z" fill="#FF6B5B" stroke="#1B2150" stroke-width="3" stroke-linejoin="round"/>
+<path d="M92 66 H176 A16 16 0 0 1 192 82 V116 A16 16 0 0 1 176 132 H168 V150 L146 132 H92 A16 16 0 0 1 76 116 V82 A16 16 0 0 1 92 66 Z" fill="#18B5A5" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="104" cy="99" r="6" fill="#1B2150"/><circle cx="134" cy="99" r="6" fill="#1B2150"/><circle cx="164" cy="99" r="6" fill="#1B2150"/>
+</svg>
+</div>
+
+<div class="tabs" role="tablist" aria-label="Для кого консультація">
+<button type="button" class="chip" role="tab" id="tab-par" aria-controls="pan-par" aria-selected="true">Для батьків</button>
+<button type="button" class="chip" role="tab" id="tab-ped" aria-controls="pan-ped" aria-selected="false">Для педагогів</button>
+</div>
+
+<div id="pan-par" role="tabpanel" aria-labelledby="tab-par" class="pbig">
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>З чого почати, якщо дитині потрібна підтримка</h3>
+<p class="intro">Коли ви помічаєте, що дитині складніше, ніж однолітками, найважливіше не зволікати й не звинувачувати себе. Чим раніше дитина отримає підтримку, тим легше їй буде вчитися й товаришувати. Нижче описано, які кроки варто пройти й у якому порядку.</p>
+<h4>Крок за кроком</h4>
+<ol>
+<li><strong>Зафіксуйте спостереження.</strong> Запишіть, що саме викликає занепокоєння: мовлення, увага, поведінка, моторика, спілкування. Занотуйте приклади й ситуації, у яких це проявляється. Такі записи допоможуть фахівцям швидше зрозуміти ситуацію.</li>
+<li><strong>Поговоріть з людьми, які знають дитину.</strong> Вихователь, класний керівник, педіатр чи сімейний лікар можуть підказати, до яких спеціалістів звернутися.</li>
+<li><strong>Зверніться до інклюзивно-ресурсного центру.</strong> Там проводять комплексну оцінку розвитку дитини. Її здійснюють за заявою батьків, а послуги центру надаються безоплатно. За результатами видають висновок з описом сильних сторін, труднощів і рекомендацій.</li>
+<li><strong>Подайте заяву до закладу освіти.</strong> До неї додайте висновок. Заклад зобов’язаний організувати навчання з урахуванням потреб дитини.</li>
+<li><strong>Дізнайтеся про команду супроводу.</strong> Керівник закладу створює команду психолого-педагогічного супроводу, яка складає індивідуальну програму розвитку. Це відбувається на початку навчання, протягом перших двох тижнів.</li>
+<li><strong>Збережіть документи.</strong> Тримайте в одній папці копії висновків, рекомендацій, ІПР, листування зі школою й нотатки про розмови.</li>
+</ol>
+<h4>Що допомагає у перші тижні</h4>
+<ul>
+<li>Розповідайте дитині про зміни наперед і простими словами.</li>
+<li>Підтримуйте звичний режим сну, харчування й відпочинку.</li>
+<li>Не порівнюйте дитину з іншими й помічайте її власні успіхи.</li>
+<li>Дозвольте собі ставити питання. Фахівці не очікують, що ви знаєте все наперед.</li>
+</ul>
+<h4>Чого краще уникати</h4>
+<ul>
+<li>Відкладати звернення «до тих пір, поки не вилізе само».</li>
+<li>Приховувати від школи важливу інформацію про дитину. Вона потрібна для безпеки й підтримки.</li>
+<li>Робити висновки на основі порад із форумів замість консультації фахівців.</li>
+</ul>
+<p class="tip"><strong>Запам’ятайте:</strong> звернення по допомогу не робить дитину «іншою» і не означає, що ви щось зробили не так. Це спосіб дати їй умови, у яких вона зможе розкрити свої можливості.</p>
+</article>
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>Як налагодити співпрацю з командою супроводу</h3>
+<p class="intro">Батьки є повноправними учасниками команди. Ви знаєте дитину краще за всіх: що її тішить, що лякає, як вона реагує на втому й зміни. Саме ці знання роблять програму розвитку живою, а не формальною.</p>
+<h4>Що ви можете й маєте право робити</h4>
+<ul>
+<li>Брати участь у зустрічах команди й розповідати про дитину.</li>
+<li>Знайомитися з індивідуальною програмою розвитку, погоджувати її та отримувати її копію.</li>
+<li>Пропонувати свої цілі, які вам видаються важливими саме зараз.</li>
+<li>Просити пояснити будь-який термін чи рекомендацію простими словами.</li>
+<li>Дізнаватися про результати моніторингу й про те, як змінюється програма.</li>
+</ul>
+<h4>Про що розповісти команді</h4>
+<ul>
+<li>Що заспокоює дитину, а що її розхитує: шум, дотики, незнайомі люди, зміна планів.</li>
+<li>Як вона повідомляє про потреби: словами, жестами, картками.</li>
+<li>Які в неї інтереси й улюблені заняття, на які можна спертися в навчанні.</li>
+<li>Що вже допомагало вдома або в дитячому садку.</li>
+</ul>
+<h4>Питання, які варто поставити на першій зустрічі</h4>
+<ol>
+<li>Хто з команди буде нашим основним контактом?</li>
+<li>Як і як часто ми отримуватимемо новини про дитину?</li>
+<li>Які цілі поставлено на цей рік і як ми дізнаємося, що їх досягнуто?</li>
+<li>Що ми можемо робити вдома, щоб підтримувати роботу школи?</li>
+<li>Як діяти, якщо дитині стане складно під час уроку?</li>
+</ol>
+<h4>Як говорити, щоб вас почули</h4>
+<p>Починайте з того, що вдається, й тільки потім переходьте до труднощів. Говоріть від себе: «Я помітила, що вдома дитина після школи дуже втомлена. Давайте подумаємо, що можна змінити». Так розмова залишається спільним пошуком рішення, а не взаємними претензіями.</p>
+<h4>Якщо ви не згодні з рішенням</h4>
+<p>Спокійно запитайте, на чому ґрунтується рішення, і запропонуйте обговорити варіанти. Якщо порозуміння немає, подайте письмове звернення на ім’я керівника закладу. Зберігайте копії листування.</p>
+<p class="tip"><strong>Запам’ятайте:</strong> найкращий результат дає регулярне, короткочасне й доброзичливе спілкування, а не рідкі зустрічі лише тоді, коли виникла проблема.</p>
+</article>
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>Як допомогти дитині звикнути до класу</h3>
+<p class="intro">Адаптація до нового класу може тривати від кількох тижнів до кількох місяців. Для дітей з особливими освітніми потребами нове місце, люди й правила часто сприймаються особливо гостро. Передбачуваність і маленькі кроки допомагають їм почуватися безпечно.</p>
+<h4>За кілька тижнів до початку</h4>
+<ul>
+<li>Відвідайте школу, коли в ній тихо. Покажіть клас, місце, де сидітиме дитина, туалет, їдальню й вихід.</li>
+<li>Зробіть фото цих місць і подивіться їх удома. Розкажіть, хто там буде.</li>
+<li>Познайомте дитину з учителем і асистентом, якщо це можливо, ще до першого уроку.</li>
+<li>Поступово повертайтеся до шкільного режиму дня.</li>
+</ul>
+<h4>У перші тижні навчання</h4>
+<ul>
+<li>Зробіть разом візуальний розклад із картинками: прокинутися, зібрати рюкзак, дорога до школи, повернення.</li>
+<li>Домовтеся про простий ритуал зустрічі й прощання біля школи, наприклад особливе рукостискання.</li>
+<li>Залишайте більше часу на ранок, щоб не поспішати.</li>
+<li>Попросіть команду розповідати вам про добрі моменти дня, а не лише про труднощі.</li>
+</ul>
+<h4>Вдома після школи</h4>
+<ul>
+<li>Дайте дитині час на відпочинок і тишу перед уроками.</li>
+<li>Не розпитуйте одразу про все. Запропонуйте промовити пару слів про день або намалювати його.</li>
+<li>Тримайте під рукою сенсорні помічники: улюблену іграшку, навушники, м’яку річ.</li>
+</ul>
+<h4>Ознаки, що потрібна додаткова підтримка</h4>
+<ul>
+<li>Дитина тривалий час відмовляється йти до школи.</li>
+<li>Змінилися сон, апетит чи настрій, з’явилися нові страхи.</li>
+<li>Вона перестала розповідати про однокласників або втратила інтерес до улюблених занять.</li>
+</ul>
+<p>У такому разі поговоріть із класним керівником, соціальним педагогом чи психологом. Разом ви зможете з’ясувати причину й скоригувати підтримку.</p>
+<p class="tip"><strong>Запам’ятайте:</strong> маленькі успіхи важливіші за швидкість. Якщо сьогодні дитина змогла посидіти на уроці п’ять хвилин довше, це привід порадіти.</p>
+</article>
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>Як говорити з дитиною про відмінності</h3>
+<p class="intro">Діти рано помічають, що вони чимось відрізняються від інших, і ставлять прямі питання. Спокійна, чесна відповідь допомагає їм формувати здорову самооцінку й не соромитися себе.</p>
+<h4>Основні принципи</h4>
+<ul>
+<li><strong>Говоріть чесно й просто.</strong> Пояснюйте мовою, зрозумілою дитині за віком.</li>
+<li><strong>Наголошуйте, що відмінності нормальні.</strong> Усі люди різні: хтось швидше бігає, хтось краще малює, комусь потрібна допомога з певними речами.</li>
+<li><strong>Не пов’язуйте цінність дитини з її результатами.</strong> Вона важлива для вас такою, яка є.</li>
+<li><strong>Говорите про сильні сторони так само часто, як і про труднощі.</strong></li>
+</ul>
+<h4>Приклади фраз</h4>
+<ul>
+<li>«Кожен учиться по-своєму. Тобі інколи потрібно більше часу, і це нормально».</li>
+<li>«Твій мозок працює по-особливому. Це не гірше й не краще, просто інакше».</li>
+<li>«Попросити про допомогу означає бути сміливим».</li>
+<li>«Ти вмієш багато чого: ось що саме».</li>
+</ul>
+<h4>Якщо дитина питає: «Чому я не такий, як усі?»</h4>
+<p>Спершу вислухайте. Запитайте, що саме вона помітила й що відчуває. Визнайте почуття: «Я бачу, що тобі від цього сумно». Потім спокійно поясніть і розкажіть, що ви завжди поруч і що в неї є люди, які допомагають.</p>
+<h4>Розмова з іншими дітьми</h4>
+<p>Брати й сестри та однокласники теж мають запитання. Пояснюйте їм коротко й доброзичливо: що дитині легко, а що ні, як можна допомогти й чого не варто робити. Навчіть їх питати: «Тобі потрібна допомога?», а не вирішувати за дитину.</p>
+<h4>Чого краще уникати</h4>
+<ul>
+<li>Жалю й фраз на кшталт «бідолашка».</li>
+<li>Порівнянь з братами, сестрами чи однолітками.</li>
+<li>Мовчання на запитання: діти відчувають напругу й домислюють гірше.</li>
+</ul>
+<p class="tip"><strong>Запам’ятайте:</strong> дитина вчиться ставитися до себе так, як до неї ставляться вдома. Ваше прийняття стає її внутрішньою опорою.</p>
+</article>
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>Що робити, якщо дитину ображають</h3>
+<p class="intro">Діти з особливими освітніми потребами частіше стикаються з насмішками й ізоляцією. Багато хто не розповідає про це самостійно. Важливо помітити сигнали, вислухати дитину й діяти спокійно та послідовно.</p>
+<h4>Як помітити, що щось не так</h4>
+<ul>
+<li>Дитина не хоче йти до школи, скаржиться на самопочуття перед уроками.</li>
+<li>Змінилась поведінка: стала замкнутою, дратівливою або плаксивою.</li>
+<li>Зникають або псуються речі, з’являються синці без пояснення.</li>
+<li>Вона уникає однокласників, перерв чи їдальні.</li>
+</ul>
+<h4>Що робити в розмові з дитиною</h4>
+<ol>
+<li>Поговоріть у спокійний момент і запитайте відкрито: «Як минув день? Було щось, що тебе засмутило?».</li>
+<li>Слухайте без осуду й перебивань. Скажіть: «Я тобі вірю. Ти не винна й не винен у цьому».</li>
+<li>Не обіцяйте нічого, чого не можете виконати, і не радьте «дати здачі».</li>
+<li>Уточніть деталі: що, де, коли, хто був поруч. Запишіть це.</li>
+</ol>
+<h4>Дії зі школою</h4>
+<ol>
+<li>Повідомте класного керівника й соціального педагога. Опишіть факти, а не оцінки.</li>
+<li>Якщо ситуація не змінюється, подайте письмову заяву керівнику закладу. Заклад освіти зобов’язаний розглянути заяву про булінг і вжити заходів.</li>
+<li>Запитайте, які кроки заплановано: розмови з учасниками, робота з класом, підтримка дитини психологом.</li>
+<li>Попросіть повідомити вас про результат і домовтеся про повторну розмову.</li>
+</ol>
+<h4>Якщо школа не реагує</h4>
+<p>Зверніться до органу управління освітою вашої громади й до служби у справах дітей. Збережіть копії заяв і відповідей. Якщо дитині загрожує небезпека, звертайтеся до поліції.</p>
+<h4>Підтримка дитини</h4>
+<ul>
+<li>Нагадуйте, що вона не одна й що ви на її боці.</li>
+<li>Допоможіть знайти заняття та друзів поза класом: гурток, секцію, двір.</li>
+<li>За потреби залучіть психолога, щоб дитина змогла пережити те, що сталося.</li>
+</ul>
+<p class="tip"><strong>Запам’ятайте:</strong> булінг не є «дитячими жартами». Чим раніше дорослі помітять і зупинять його, тим менші наслідки для дитини.</p>
+</article>
+
+<article class="big">
+<span class="btag">Консультація для батьків</span>
+<h3>Як не вигоріти самим</h3>
+<p class="intro">Турбота про дитину з особливими потребами вимагає багато сил, і втома тут природна. Піклуватися про себе не егоїзм, а умова, за якої ви довго залишатиметеся опорою для дитини.</p>
+<h4>Ознаки перевтоми</h4>
+<ul>
+<li>Постійна втома, яку не знімає сон.</li>
+<li>Дратівливість, відчуття безсилля або порожнечі.</li>
+<li>Відмова від спілкування й улюблених занять.</li>
+<li>Відчуття провини за кожен відпочинок.</li>
+</ul>
+<h4>Прості кроки на щодень</h4>
+<ol>
+<li>Плануйте хоча б 20–30 хвилин на день лише для себе: прогулянка, чай у тиші, розмова з другом.</li>
+<li>Діліть обов’язки з партнером, бабусею, сестрою чи друзями. Дозволяйте іншим допомагати.</li>
+<li>Розбивайте завдання на маленькі кроки й святкуйте виконання.</li>
+<li>Дбайте про сон, харчування та рух, навіть у найпростішому вигляді.</li>
+</ol>
+<h4>Де шукати підтримку</h4>
+<ul>
+<li><strong>Спільноти батьків.</strong> Люди, які проходять схожий шлях, дають практичні поради й відчуття, що ви не самі.</li>
+<li><strong>Соціальний педагог і психолог закладу.</strong> Вони допоможуть із питаннями, які стосуються дитини, і підкажуть, де знайти допомогу для вас.</li>
+<li><strong>Психолог чи психотерапевт.</strong> Якщо ви тривалий час почуваєтеся пригніченою чи пригніченим, не соромтеся звернутися до фахівця.</li>
+</ul>
+<h4>Що допомагає думкам</h4>
+<p>Не потрібно бути ідеальним. Допустимо помилятися, втомлюватися й просити про допомогу. Дитині потрібен не безгрішний дорослий, а присутній і турботливий.</p>
+<p class="tip"><strong>Запам’ятайте:</strong> ваш добрий стан є частиною підтримки дитини. Коли ви відпочили, ви краще чуєте її й спокійніше реагуєте на труднощі.</p>
+</article>
+
+</div>
+
+<div id="pan-ped" role="tabpanel" aria-labelledby="tab-ped" class="acc" hidden>
+<details open><summary>Як створити безбар’єрне середовище в класі</summary><div class="dbody"><p>Подумайте про фізичну доступність, освітлення, шум і порядок у класі. Візуальні опори допомагають усім: розклад, правила, послідовність дій. Залишайте вільні проходи й зрозуміле місце для відпочинку.</p></div></details>
+<details><summary>Як адаптувати завдання</summary><div class="dbody"><ul><li>Зменшіть обсяг або розбийте завдання на короткі кроки.</li><li>Дайте вибір способу відповіді: усно, малюнком, карткою, за допомогою конструктора.</li><li>Використайте приклад-зразок і підказки, які поступово забираєте.</li><li>Оцінюйте прогрес дитини порівняно з її власними результатами.</li></ul></div></details>
+<details><summary>Як співпрацювати з асистентом вчителя</summary><div class="dbody"><p>Плануйте урок разом і домовтеся, хто що робить. Асистент допомагає дитині ставати самостійнішою й не заміняє її. Обговорюйте після уроку, що спрацювало, а що варто змінити.</p></div></details>
+<details><summary>Як будувати дружню класну спільноту</summary><div class="dbody"><ul><li>Разом складіть правила класу.</li><li>Розподіляйте ролі в групах так, щоб кожен мав значуще завдання.</li><li>Проводьте ігри на довіру й взаємодопомогу (див. розділ «Ігри та вправи»).</li><li>Помічайте й називайте добрі вчинки.</li></ul></div></details>
+<details><summary>Як запобігти булінгу</summary><div class="dbody"><p>Говоріть з дітьми про повагу, спостерігайте за перервами, їдальнею й дорогою додому. Реагуйте одразу й спокійно, залучайте соціального педагога та психолога, повідомляйте батьків усіх сторін.</p></div></details>
+<details><summary>Як вести спостереження й спілкуватися з батьками</summary><div class="dbody"><p>Робіть короткі нотатки: що вдалося, у чому була складність, що допомогло. Починайте розмову з батьками з успіхів, потім переходьте до запитів на підтримку. Домовляйтеся про конкретні кроки на найближчий тиждень.</p></div></details>
+</div>
+
+<div class="help">
+<svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="Значок: будинок із серцем"><path d="M8 42 L42 12 L76 42 V74 H8 Z" fill="#FFFFFF" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/><path d="M42 62 C24 50 24 38 34 38 C38 38 42 41 42 45 C42 41 46 38 50 38 C60 38 60 50 42 62 Z" fill="#FF6B5B" stroke="#1B2150" stroke-width="3" stroke-linejoin="round"/></svg>
+<div><h3>До кого звертатися в закладі</h3><p>До класного керівника, соціального педагога, практичного психолога та команди супроводу. Соціальний педагог допомагає родині, налагоджує зв’язок зі школою й службами громади та стежить за благополуччям дитини в колективі.</p></div>
+</div>
+</div>
+</section>
+
+<!-- 3. Ігри та вправи -->
+<section id="games" class="band b-games">
+<div class="wrap">
+<div class="shead">
+<div>
+<span class="tag">Розділ 3</span>
+<h2>Добір ігор та вправ для дітей з особливими освітніми потребами</h2>
+
+</div>
+<svg viewBox="0 0 200 160" role="img" aria-label="Малюнок: кубик, м’яч і деталь пазла">
+<rect x="14" y="52" width="76" height="76" rx="16" fill="#FFC933" stroke="#1B2150" stroke-width="4"/>
+<circle cx="38" cy="76" r="7" fill="#1B2150"/><circle cx="66" cy="76" r="7" fill="#1B2150"/><circle cx="52" cy="90" r="7" fill="#1B2150"/><circle cx="38" cy="106" r="7" fill="#1B2150"/><circle cx="66" cy="106" r="7" fill="#1B2150"/>
+<circle cx="140" cy="56" r="34" fill="#FF6B5B" stroke="#1B2150" stroke-width="4"/>
+<path d="M112 44 Q140 64 168 44 M112 68 Q140 48 168 68" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+<path d="M112 108 H134 C134 96 154 96 154 108 H176 V130 C164 130 164 150 176 150 H112 Z" fill="#18B5A5" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+</svg>
+</div>
+
+<div class="chips" id="catFilters" role="group" aria-label="Напрям">
+<span class="lbl">Напрям:</span>
+<button type="button" class="chip" data-v="all" aria-pressed="true">Усі</button>
+<button type="button" class="chip" data-v="com" aria-pressed="false">Спілкування</button>
+<button type="button" class="chip" data-v="emo" aria-pressed="false">Емоції</button>
+<button type="button" class="chip" data-v="mov" aria-pressed="false">Рухливі</button>
+<button type="button" class="chip" data-v="sen" aria-pressed="false">Сенсорні</button>
+<button type="button" class="chip" data-v="team" aria-pressed="false">Командні</button>
+</div>
+<div class="chips" id="ageFilters" role="group" aria-label="Вік">
+<span class="lbl">Вік:</span>
+<button type="button" class="chip" data-v="all" aria-pressed="true">Будь-який</button>
+<button type="button" class="chip" data-v="p" aria-pressed="false">3–6 років</button>
+<button type="button" class="chip" data-v="s" aria-pressed="false">7–10 років</button>
+<button type="button" class="chip" data-v="m" aria-pressed="false">11–14 років</button>
+</div>
+<p class="count" id="gcount" aria-live="polite"></p>
+
+<div class="grid" id="gGrid">
+<article class="card gcard" data-cat="sen" data-age="p s"><div class="top2"><div class="ico">👜</div><h3>Чарівний мішечок</h3></div><div class="meta"><span>Сенсорні</span><span>3–10 р.</span><span>10 хв</span></div><p>Дитина на дотик відгадує предмети різної фактури.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> розвиток тактильного сприйняття й мовлення.</p><p><strong>Матеріали:</strong> непрозорий мішечок, дрібні предмети: губка, ґудзик, м’яка іграшка, шишка.</p><p><strong>Хід:</strong> дитина торкається предмета в мішечку, описує його (м’який, гладкий, колючий) і здогадується, що це.</p><p><strong>Адаптація:</strong> для дітей з труднощами мовлення додайте картки-підказки або пропонуйте вибір із двох варіантів.</p></div></details></article>
+<article class="card gcard" data-cat="emo" data-age="p s"><div class="top2"><div class="ico">🪞</div><h3>Дзеркало настроїв</h3></div><div class="meta"><span>Емоції</span><span>3–10 р.</span><span>10 хв</span></div><p>У парах діти показують і впізнають емоції.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> вчитися розпізнавати й називати емоції.</p><p><strong>Матеріали:</strong> картки з піктограмами емоцій.</p><p><strong>Хід:</strong> одна дитина показує емоцію мімікою й жестами, інша повторює й називає її. Потім діти міняються.</p><p><strong>Адаптація:</strong> для дітей, яким складно читати міміку, використовуйте реальні фото й спокійний темп, дозвольте показувати картку замість слова.</p></div></details></article>
+<article class="card gcard" data-cat="com" data-age="p"><div class="top2"><div class="ico">⚽</div><h3>Передай м’ячик</h3></div><div class="meta"><span>Спілкування</span><span>3–6 р.</span><span>10 хв</span></div><p>У колі діти передають м’яч і кажуть добре слово.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> знайомство, увага до інших, привітність.</p><p><strong>Матеріали:</strong> м’який м’яч.</p><p><strong>Хід:</strong> діти сидять у колі. Той, хто тримає м’яч, називає ім’я сусіда й говорить йому щось приємне, потім передає м’яч далі.</p><p><strong>Адаптація:</strong> м’яч можна котити по підлозі; дитина може не говорити, а показати жест чи картку.</p></div></details></article>
+<article class="card gcard" data-cat="com team" data-age="s m"><div class="top2"><div class="ico">🕸️</div><h3>Павутинка дружби</h3></div><div class="meta"><span>Спілкування</span><span>Командні</span><span>7–14 р.</span><span>15 хв</span></div><p>Клубок ниток поєднує клас у спільну павутину.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> відчути єдність класу, навчитися цінувати інших.</p><p><strong>Матеріали:</strong> клубок ниток.</p><p><strong>Хід:</strong> учень тримає кінець нитки, каже, що він цінує в однокласнику, й передає клубок йому. Зрештою утворюється павутина. Обережно підніміть її й обговоріть, що буде, якщо хтось відпустить нитку.</p><p><strong>Адаптація:</strong> дозвольте сказати речення із шаблону: «Мені подобається, що ти…».</p></div></details></article>
+<article class="card gcard" data-cat="mov" data-age="p"><div class="top2"><div class="ico">🚦</div><h3>Світлофор</h3></div><div class="meta"><span>Рухливі</span><span>3–6 р.</span><span>10 хв</span></div><p>Діти рухаються за кольором картки.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> увага, самоконтроль, орієнтація в просторі.</p><p><strong>Матеріали:</strong> червона, жовта й зелена картки.</p><p><strong>Хід:</strong> зелена картка означає ходьбу, жовта означає повільні кроки, червона означає зупинку. Поступово змінюйте темп.</p><p><strong>Адаптація:</strong> для дітей на візку або з обмеженою рухливістю замініть кроки рухами рук і корпусу; дайте картки й дитині.</p></div></details></article>
+<article class="card gcard" data-cat="team" data-age="s"><div class="top2"><div class="ico">🌉</div><h3>Будуємо міст</h3></div><div class="meta"><span>Командні</span><span>7–10 р.</span><span>20 хв</span></div><p>Команди будують спільну споруду з конструктора.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> домовлятися, ділити ролі, допомагати одне одному.</p><p><strong>Матеріали:</strong> конструктор або кубики.</p><p><strong>Хід:</strong> у командах по 4 учні кожен по черзі додає деталь і пояснює, чому саме тут. Потім команди розповідають про свій міст.</p><p><strong>Адаптація:</strong> розподіліть ролі: хто підбирає деталі, хто будує, хто розповідає. Кожна роль важлива.</p></div></details></article>
+<article class="card gcard" data-cat="emo" data-age="s m"><div class="top2"><div class="ico">🎨</div><h3>Мапа моїх почуттів</h3></div><div class="meta"><span>Емоції</span><span>7–14 р.</span><span>15 хв</span></div><p>Діти малюють настрій дня кольорами.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> усвідомлювати власні почуття й говорити про них.</p><p><strong>Матеріали:</strong> аркуші, фарби або маркери.</p><p><strong>Хід:</strong> разом домовтеся, який колір що означає. Діти малюють «мапу» свого дня, а потім за бажанням розповідають про неї.</p><p><strong>Адаптація:</strong> ніхто не зобов’язаний показувати чи пояснювати малюнок.</p></div></details></article>
+<article class="card gcard" data-cat="sen" data-age="p s"><div class="top2"><div class="ico">🔔</div><h3>Звуки довкілля</h3></div><div class="meta"><span>Сенсорні</span><span>3–10 р.</span><span>10 хв</span></div><p>Діти відгадують предмети за звуком.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> слухова увага та диференціація звуків.</p><p><strong>Матеріали:</strong> непрозорі баночки з крупами, горохом, ґудзиками.</p><p><strong>Хід:</strong> діти струшують баночки, слухають і складають їх у пари за однаковим звучанням.</p><p><strong>Адаптація:</strong> для дітей, чутливих до шуму, застосуйте тихіші наповнювачі й дайте час звикнути.</p></div></details></article>
+<article class="card gcard" data-cat="team mov" data-age="m"><div class="top2"><div class="ico">🗺️</div><h3>Квест «Скарби класу»</h3></div><div class="meta"><span>Командні</span><span>11–14 р.</span><span>30 хв</span></div><p>Змішані команди розв’язують завдання на станціях.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> командна взаємодія, повага до сильних сторін кожного.</p><p><strong>Матеріали:</strong> маршрутні листи, конверти із завданнями.</p><p><strong>Хід:</strong> команди проходять 4–5 станцій із різними завданнями: шифр, пазл, загадки, рухове завдання. Після кожної станції команда записує, хто чим допоміг.</p><p><strong>Адаптація:</strong> добирайте завдання так, щоб були й слухові, і наочні, і рухові. Станції мають бути доступними для всіх.</p></div></details></article>
+<article class="card gcard" data-cat="emo" data-age="p s"><div class="top2"><div class="ico">🎈</div><h3>Повітряна кулька</h3></div><div class="meta"><span>Емоції</span><span>3–10 р.</span><span>5 хв</span></div><p>Дихальна вправа для заспокоєння.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> навчитися заспокоюватися.</p><p><strong>Хід:</strong> діти вдихають носом, повільно «надуваючи» кульку руками навколо живота, а потім довго видихають, «випускаючи повітря». Повторіть 4–5 разів.</p><p><strong>Адаптація:</strong> можна виконувати сидячи або лежачи; за потреби покажіть кульку-іграшку, яка роздувається.</p></div></details></article>
+<article class="card gcard" data-cat="com" data-age="m"><div class="top2"><div class="ico">🎤</div><h3>Хто що вміє</h3></div><div class="meta"><span>Спілкування</span><span>11–14 р.</span><span>15 хв</span></div><p>Інтерв’ю в парах і презентація сусіда.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> побачити сильні сторони однокласників.</p><p><strong>Матеріали:</strong> картки з питаннями: «Що ти любиш робити?», «Чим ти пишаєшся?».</p><p><strong>Хід:</strong> у парах учні беруть інтерв’ю одне в одного, а потім представляють сусіда класу.</p><p><strong>Адаптація:</strong> дозвольте відповідати письмово чи малюнком, додайте картки з готовими варіантами.</p></div></details></article>
+<article class="card gcard" data-cat="mov sen" data-age="p s"><div class="top2"><div class="ico">🎶</div><h3>Танцюючі долоньки</h3></div><div class="meta"><span>Рухливі</span><span>Сенсорні</span><span>3–10 р.</span><span>10 хв</span></div><p>Ритмічні рухи й пальчикова гімнастика під музику.</p><details><summary>Як грати</summary><div class="dbody"><p><strong>Мета:</strong> розвиток дрібної моторики й почуття ритму.</p><p><strong>Матеріали:</strong> спокійна музика.</p><p><strong>Хід:</strong> педагог показує рухи долоньок і пальчиків: «дощик», «метелик», «равлик», діти повторюють у ритмі музики.</p><p><strong>Адаптація:</strong> рухи можна виконувати однією рукою або з допомогою дорослого.</p></div></details></article>
+</div>
+<div class="empty" id="gEmpty" hidden>За цими умовами ігор поки немає. Змініть напрям або вік.</div>
+</div>
+</section>
+
+<!-- 4. Конспекти -->
+<section id="events" class="band b-events">
+<div class="wrap">
+<div class="shead">
+<div>
+<span class="tag">Розділ 4</span>
+<h2>Конспекти виховних заходів</h2>
+
+</div>
+<svg viewBox="0 0 200 160" role="img" aria-label="Малюнок: велика зірка, повітряна кулька та конфеті">
+<path d="M80 14 L94 52 L134 52 L102 76 L114 114 L80 92 L46 114 L58 76 L26 52 L66 52 Z" fill="#FFC933" stroke="#1B2150" stroke-width="4" stroke-linejoin="round"/>
+<ellipse cx="156" cy="70" rx="24" ry="30" fill="#FF6B5B" stroke="#1B2150" stroke-width="4"/>
+<path d="M156 100 C150 116 164 126 156 148" fill="none" stroke="#1B2150" stroke-width="3" stroke-linecap="round"/>
+<rect x="30" y="126" width="12" height="12" rx="3" fill="#8A6CFF" transform="rotate(20 36 132)"/>
+<circle cx="100" cy="134" r="7" fill="#3AA7FF"/><rect x="118" y="118" width="12" height="12" rx="3" fill="#FF6B5B" transform="rotate(-15 124 124)"/>
+</svg>
+</div>
+
+<div class="acc">
+<details open><summary class="evsum"><span><span class="evtag">1–4 клас</span><span class="evtag">35 хв</span></span>Усі ми різні — і це чудово<small>Виховна година про повагу до відмінностей</small></summary>
+<div class="dbody">
+<p><strong>Мета:</strong> формувати повагу до відмінностей між людьми, розвивати емпатію, показати, що кожен має сильні сторони.</p>
+<p><strong>Обладнання:</strong> м’яч, аркуші з контурами долоньок, кольорові олівці, великий плакат із деревом, клей.</p>
+<ol class="timeline">
+<li><b>Коло радості (5 хв).</b> Діти передають м’яч по колу й кажуть сусідові добре слово.</li>
+<li><b>Бесіда «Чим ми схожі й різні?» (7 хв).</b> Діти називають риси: улюблена гра, швидкість бігу, колір очей. Педагог підсумовує: відмінності не заважають дружити.</li>
+<li><b>Гра «Встань, якщо ти…» (8 хв).</b> Ті, кого стосується фраза («любить малювати», «має брата чи сестру», «вміє розповідати вірші»), встають. Діти бачать, що спільного в них багато.</li>
+<li><b>Творча робота «Наше дерево» (10 хв).</b> Кожен обводить долоньку, малює на ній свій талант і приклеює на дерево.</li>
+<li><b>Рефлексія (5 хв).</b> Що нового я дізнався про однокласників? Дітям пропонують показати настрій: зелена, жовта чи червона картка.</li>
+</ol>
+<p class="inc"><strong>Для інклюзії:</strong> пропонуйте кілька способів участі: сказати, показати, намалювати. Не змушуйте говорити тих, кому це складно.</p>
+</div></details>
+
+<details><summary class="evsum"><span><span class="evtag">1–6 клас</span><span class="evtag">40 хв</span></span>Скринька доброти<small>Позакласний захід до Дня доброти</small></summary>
+<div class="dbody">
+<p><strong>Мета:</strong> розвивати доброзичливість і навички взаємодопомоги, вчити помічати потреби інших.</p>
+<p><strong>Обладнання:</strong> скринька, картки з ситуаціями, кольоровий папір, ножиці, клей, спокійна музика.</p>
+<ol class="timeline">
+<li><b>Вступ (6 хв).</b> Коротка розповідь або історія про добрий вчинок і обговорення: що таке доброта?</li>
+<li><b>Гра «Добре слово» (8 хв).</b> Діти витягують зі скриньки картку з ситуацією («Однокласник не встигає за завданням») і придумують, як допомогти, або інсценізують її.</li>
+<li><b>Майстерня «Серце-подарунок» (15 хв).</b> Кожен виготовляє паперове серце з побажанням для однокласника. Пари визначає педагог так, щоб ніхто не лишився без подарунка.</li>
+<li><b>Обмін подарунками (6 хв).</b> Діти вручають серця й читають побажання.</li>
+<li><b>Підсумок (5 хв).</b> Кожен обіцяє одну добру справу на тиждень і кладе обіцянку у скриньку.</li>
+</ol>
+<p class="inc"><strong>Для інклюзії:</strong> підготуйте заготовки для дітей із труднощами дрібної моторики; побажання можна намалювати або вибрати з готових карток.</p>
+</div></details>
+
+<details><summary class="evsum"><span><span class="evtag">3–5 клас</span><span class="evtag">40 хв</span></span>Мої емоції — мої помічники<small>Заняття з емоційної грамотності та саморегуляції</small></summary>
+<div class="dbody">
+<p><strong>Мета:</strong> навчити розпізнавати й називати емоції, ознайомити з простими способами заспокоєння.</p>
+<p><strong>Обладнання:</strong> картки-піктограми емоцій, великий аркуш для «колеса емоцій», силует людини, маркери, м’які іграшки.</p>
+<ol class="timeline">
+<li><b>«Погода мого настрою» (5 хв).</b> Кожен обирає картку: сонце, хмарка чи дощ.</li>
+<li><b>Колесо емоцій (7 хв).</b> Разом складаємо перелік емоцій і наклеюємо піктограми на «колесо».</li>
+<li><b>«Де живе емоція?» (8 хв).</b> На силуеті діти показують, де в тілі відчувають радість, злість, страх.</li>
+<li><b>Скринька спокою (10 хв).</b> Пробуємо техніки: дихання «повітряна кулька», «стискаю й відпускаю» кулачки, «5 речей, які я бачу».</li>
+<li><b>Малюнок «Мій помічник» (5 хв).</b> Діти малюють спосіб, який їм допомагає заспокоїтися.</li>
+<li><b>Підсумок (5 хв).</b> Коротка розповідь за бажанням: що я візьму із заняття.</li>
+</ol>
+<p class="inc"><strong>Для інклюзії:</strong> дозвольте не ділитися особистим. Підготуйте тихий куточок, куди дитина може відійти, якщо їй забагато вражень.</p>
+</div></details>
+
+<details><summary class="evsum"><span><span class="evtag">5–7 клас</span><span class="evtag">45 хв</span></span>Дружна команда: квест<small>Командна гра на станціях</small></summary>
+<div class="dbody">
+<p><strong>Мета:</strong> розвивати командну взаємодію й комунікацію, вчити помічати сильні сторони кожного.</p>
+<p><strong>Обладнання:</strong> маршрутні листи, 5 станцій із конвертами завдань, таймер, наклейки-медалі.</p>
+<ol class="timeline">
+<li><b>Формування команд (5 хв).</b> Змішані команди по 5–6 учнів. Кожен обирає роль: капітан, секретар, шифрувальник, хранитель часу, дипломат.</li>
+<li><b>Інструктаж (3 хв).</b> Правила: слухаємо одне одного, допомагаємо, не поспішаємо.</li>
+<li><b>Станції (25 хв).</b> «Шифр» (розгадати слово), «Пазл» (скласти картинку), «Тиха естафета» (передати повідомлення без слів), «Опиши маршрут» (пояснити словами шлях до скарбу), «Загадки класу».</li>
+<li><b>Підбиття підсумків (5 хв).</b> Замість місць команди отримують відзнаки: «Команда-винахідник», «Команда-підтримка», «Команда-дипломат».</li>
+<li><b>Рефлексія (7 хв).</b> Що допомогло нам працювати разом? Хто нам допоміг і чим?</li>
+</ol>
+<p class="inc"><strong>Для інклюзії:</strong> добирайте станції з різними типами завдань: слуховими, наочними, руховими. Перевірте, що маршрут доступний для всіх, а у кожного в команді є значуща роль.</p>
+</div></details>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<h2>Про проєкт</h2>
+<p>Сайт «Інклюзивний простір» створила студентка Полічко Софія, група К231/2-24, спеціальність «Соціальна педагогіка».</p>
+<small>Матеріали мають освітній характер і не замінюють консультацію фахівця. Перевіряйте чинні редакції нормативних документів на офіційних ресурсах.</small>
+</div>
+</footer>
+
+<script>
+(function(){
+  function groupButtons(root, onPick){
+    var btns = root.querySelectorAll('.chip');
+    btns.forEach(function(b){
+      b.addEventListener('click', function(){
+        btns.forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+        onPick(b.getAttribute('data-f') || b.getAttribute('data-v'));
+      });
+    });
+  }
+  // Норми
+  var norms = document.querySelectorAll('.norm');
+  groupButtons(document.getElementById('normFilters'), function(v){
+    norms.forEach(function(n){ n.hidden = !(v==='all' || n.getAttribute('data-cat')===v); });
+  });
+  // Ігри
+  var games = document.querySelectorAll('.gcard');
+  var state = {cat:'all', age:'all'};
+  function applyGames(){
+    var shown = 0;
+    games.forEach(function(g){
+      var c = g.getAttribute('data-cat').split(' ');
+      var a = g.getAttribute('data-age').split(' ');
+      var ok = (state.cat==='all' || c.indexOf(state.cat)>-1) && (state.age==='all' || a.indexOf(state.age)>-1);
+      g.hidden = !ok;
+      if(ok) shown++;
+    });
+    document.getElementById('gcount').textContent = 'Показано ігор: ' + shown + ' з ' + games.length;
+    document.getElementById('gEmpty').hidden = shown !== 0;
+  }
+  groupButtons(document.getElementById('catFilters'), function(v){ state.cat = v; applyGames(); });
+  groupButtons(document.getElementById('ageFilters'), function(v){ state.age = v; applyGames(); });
+  applyGames();
+  // Вкладки
+  var tabs = [document.getElementById('tab-par'), document.getElementById('tab-ped')];
+  var panels = [document.getElementById('pan-par'), document.getElementById('pan-ped')];
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(x, j){ x.setAttribute('aria-selected', j===i ? 'true' : 'false'); panels[j].hidden = j!==i; });
+    });
+  });
+})();
+</script>
+
+</body></html>
